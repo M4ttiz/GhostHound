@@ -8,3 +8,4 @@ coverage/
 venv/
 *.log
 .env
+.rules/
