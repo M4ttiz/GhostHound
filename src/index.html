@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GhostHound - OSINT Investigation Dashboard</title>
+  <!-- Google Fonts for JetBrains Mono and Orbitron -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Custom Frameless Window Title Bar -->
+  <div id="title-bar">
+    <div class="title-logo">
+      <span class="logo-icon">👁️</span>
+      <span class="logo-text">GHOST_HOUND</span>
+      <span class="logo-divider">//</span>
+      <span class="logo-subtext">OSINT INVESTIGATION TERMINAL v1.0.0</span>
+    </div>
+    <div id="window-controls">
+      <button class="control-btn" id="btn-minimize" title="Minimize">—</button>
+      <button class="control-btn" id="btn-maximize" title="Maximize">⬜</button>
+      <button class="control-btn" id="btn-close" title="Close">✕</button>
+    </div>
+  </div>
+
+  <!-- Main Dashboard Container -->
+  <div id="app-container">
+    
+    <!-- Top Bar: Omnibox + Stealth Indicator -->
+    <header id="top-bar">
+      <div class="omnibox-wrapper">
+        <span class="prompt-symbol">&gt;_</span>
+        <input type="text" id="omnibox" placeholder="Search @username, email@domain.com, domain.com, or IP..." autocomplete="off">
+        <button id="btn-scan">RUN SCAN</button>
+      </div>
+      <div id="stealth-indicator" class="stealth-active">
+        <span class="pulse-dot"></span>
+        <span class="stealth-label">STEALTH CORE: ACTIVE</span>
+        <span class="stealth-badges">
+          <span class="badge">[UA_ROTATION]</span>
+          <span class="badge">[RTC_SHIELD]</span>
+        </span>
+      </div>
+    </header>
+
+    <!-- Main Workspace Layout -->
+    <div id="workspace">
+      
+      <!-- Left Sidebar: Operations Log -->
+      <aside id="sidebar">
+        <div class="sidebar-header">
+          <h3>OPERATIONS_LOG</h3>
+          <span class="terminal-dot"></span>
+        </div>
+        <div id="log-feed" class="terminal-scroll">
+          <div class="log-entry sys">[SYSTEM] Booting GhostHound OSINT engine...</div>
+          <div class="log-entry sys">[SYSTEM] WebRTC UDP leak shield active.</div>
+          <div class="log-entry sys">[SYSTEM] User-Agent pool loaded (5 rotating agents).</div>
+          <div class="log-entry success">[SYSTEM] Ready for target inputs.</div>
+        </div>
+        <div class="sidebar-footer">
+          <span class="footer-status">ONLINE</span>
+          <span class="footer-latency" id="latency-val">EST_PING: 14ms</span>
+        </div>
+      </aside>
+
+      <!-- Right Panel: Tabs and Results Display -->
+      <main id="main-content">
+        
+        <!-- Navigation Tab Menu -->
+        <nav id="tab-navigation">
+          <button class="tab-btn active" data-tab="dashboard">DASHBOARD</button>
+          <button class="tab-btn" data-tab="sherlock">SHERLOCK (USERNAMES)</button>
+          <button class="tab-btn" data-tab="domain">DOMAIN &amp; IP</button>
+          <button class="tab-btn" data-tab="breaches">BREACHES</button>
+          <button class="tab-btn" data-tab="exif">EXIF ANALYZER</button>
+        </nav>
+
+        <!-- Dynamic Results Containers -->
+        <div id="results-display" class="terminal-scroll">
+          
+          <!-- Tab 1: Dashboard Home -->
+          <div class="tab-pane active" id="tab-pane-dashboard">
+            <div class="welcome-box">
+              <h2>SECURE SYSTEM OPERATION CONSOLE</h2>
+              <p class="subtitle">Passive OSINT reconnaissance module for investigative analysts.</p>
+              
+              <div class="console-graphics">
+                <pre>
+   ______ __               __  __                      __
+  / ____// /_   ____   ___/ /_/ /_  ____   __  __ ____/ /
+ / / __ / __ \ / __ \ / ___// __ \/ __ \ / / / // __  / 
+/ /_/ // / / // /_/ /(__  )/ / / / /_/ // /_/ // /_/ /  
+\____//_/ /_/ \____//____//_/ /_/\____/ \__,_/ \__,_/   
+                </pre>
+              </div>
+
+              <h3>INPUT PARSING TEMPLATES:</h3>
+              <div class="guide-grid">
+                <div class="guide-card" onclick="setOmniboxInput('@sherlock')">
+                  <span class="guide-tag">@username</span>
+                  <p>Sherlock username scanner. Scans 15 major social platforms concurrently.</p>
+                  <span class="example-code">@johndoe</span>
+                </div>
+                <div class="guide-card" onclick="setOmniboxInput('google.com')">
+                  <span class="guide-tag">domain / IP</span>
+                  <p>DNS records, GeoIP, Shodan ports/vulnerabilities, reverse IP and WHOIS parser.</p>
+                  <span class="example-code">github.com</span>
+                </div>
+                <div class="guide-card" onclick="setOmniboxInput('test@example.com')">
+                  <span class="guide-tag">email@addr.com</span>
+                  <p>Aggregated public breach scanner checks across LeakCheck and XposedOrNot APIs.</p>
+                  <span class="example-code">admin@domain.com</span>
+                </div>
+                <div class="guide-card" id="guide-exif-click">
+                  <span class="guide-tag">Image File</span>
+                  <p>Drag &amp; drop any JPG/PNG here, or click to extract embedded EXIF camera, software, &amp; GPS coordinates.</p>
+                  <span class="example-code">CLICK / DROP FILE</span>
+                </div>
+              </div>
+
+              <div class="system-status-box">
+                <div class="status-title">RECON OPERATIONAL PARAMETERS</div>
+                <div class="status-grid">
+                  <div class="status-item">
+                    <span class="stat-label">WebRTC Protection:</span>
+                    <span class="stat-val status-green">ENABLED [UDP_BLOCKED]</span>
+                  </div>
+                  <div class="status-item">
+                    <span class="stat-label">Session UA Profile:</span>
+                    <span class="stat-val status-cyan" id="ua-current-profile">Rotated (5 Engines)</span>
+                  </div>
+                  <div class="status-item">
+                    <span class="stat-label">Core Threat Feeds:</span>
+                    <span class="stat-val status-green">ONLINE</span>
+                  </div>
+                  <div class="status-item">
+                    <span class="stat-label">Bypasses Active:</span>
+                    <span class="stat-val status-cyan">SSL_Pinning | Scrub_Headers</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Sherlock Usernames -->
+          <div class="tab-pane" id="tab-pane-sherlock">
+            <div class="pane-header">
+              <h2>SHERLOCK USERNAME TARGET SCANNER</h2>
+              <div class="pane-actions">
+                <button class="btn-action" id="btn-export-sherlock">EXPORT JSON</button>
+              </div>
+            </div>
+            <div class="results-stats" id="stats-sherlock">No scan performed yet.</div>
+            <div class="results-table-container">
+              <table id="table-sherlock" class="glow-table">
+                <thead>
+                  <tr>
+                    <th>PLATFORM</th>
+                    <th>TARGET PROFILE URL</th>
+                    <th>RESULT STATUS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="3" class="empty-state">Enter a username starting with @ in the Omnibox above and hit Run Scan.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 3: Domain & IP -->
+          <div class="tab-pane" id="tab-pane-domain">
+            <div class="pane-header">
+              <h2>DOMAIN &amp; IP TARGET INVESTIGATION</h2>
+              <div class="pane-actions">
+                <button class="btn-action" id="btn-export-domain">EXPORT JSON</button>
+              </div>
+            </div>
+            <div class="results-stats" id="stats-domain">No domain/IP scan performed yet.</div>
+            <div id="domain-results-area">
+              <div class="empty-state">Enter a domain or IP address in the Omnibox above to run deep queries.</div>
+            </div>
+          </div>
+
+          <!-- Tab 4: Breaches -->
+          <div class="tab-pane" id="tab-pane-breaches">
+            <div class="pane-header">
+              <h2>AGGREGATED PUBLIC BREACH SCANNER</h2>
+              <div class="pane-actions">
+                <button class="btn-action" id="btn-export-breaches">EXPORT JSON</button>
+              </div>
+            </div>
+            <div class="results-stats" id="stats-breaches">No breach scan performed yet.</div>
+            <div class="results-table-container">
+              <table id="table-breaches" class="glow-table">
+                <thead>
+                  <tr>
+                    <th>BREACH SOURCE</th>
+                    <th>DATABASE / BREACH NAME</th>
+                    <th>LEAK DATE</th>
+                    <th>LEAKED DATA TYPES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="4" class="empty-state">Enter an email address in the Omnibox above to run a breach query.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 5: EXIF Analyzer -->
+          <div class="tab-pane" id="tab-pane-exif">
+            <div class="pane-header">
+              <h2>EXIF METADATA EXTRACTION ENGINE</h2>
+              <div class="pane-actions">
+                <button class="btn-action" id="btn-export-exif">EXPORT JSON</button>
+              </div>
+            </div>
+            
+            <div id="exif-drop-zone">
+              <div class="drop-zone-content">
+                <span class="drop-icon">📂</span>
+                <h3>Drag &amp; Drop Image Here</h3>
+                <p>Supports .jpg, .jpeg, .png files containing metadata headers</p>
+                <span class="or-divider">- OR -</span>
+                <button id="btn-select-file" class="btn-primary">BROWSE FILE</button>
+              </div>
+            </div>
+
+            <div id="exif-results-area" style="display: none;">
+              <!-- Results get rendered dynamically here -->
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay">
+    <div class="spinner-box">
+      <div class="cyber-spinner"></div>
+      <div class="loading-text">SCANNING TARGET...</div>
+      <div class="loading-subtext">Executing secure socket connections in stealth mode...</div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="renderer.js"></script>
+</body>
+</html>
