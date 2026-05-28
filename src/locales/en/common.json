@@ -1,0 +1,18 @@
+{
+  "appName": "GhostHound",
+  "tagline": "OSINT Intelligence Platform",
+  "search": "Search",
+  "searchPlaceholder": "Search username, domain, IP, email...",
+  "loading": "Loading...",
+  "error": "Error",
+  "success": "Success",
+  "cancel": "Cancel",
+  "save": "Save",
+  "export": "Export",
+  "exportJSON": "Export JSON",
+  "exportCSV": "Export CSV",
+  "download": "Download",
+  "notFound": "Page not found",
+  "backToHome": "Back to home",
+  "backToDashboard": "Back to dashboard"
+}

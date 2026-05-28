@@ -1,0 +1,14 @@
+{
+  "generic": "Si è verificato un errore",
+  "network": "Errore di rete",
+  "unauthorized": "Accesso non autorizzato",
+  "loginFailed": "Email o password non validi",
+  "registerFailed": "Registrazione fallita",
+  "emailTaken": "Email già in uso",
+  "invalidEmail": "Email non valida",
+  "passwordLength": "La password deve essere di almeno 8 caratteri",
+  "passwordMatch": "Le password non corrispondono",
+  "rateLimit": "Troppe richieste. Riprova più tardi.",
+  "notFound": "Risorsa non trovata",
+  "serverError": "Errore del server"
+}

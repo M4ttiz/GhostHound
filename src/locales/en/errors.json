@@ -1,0 +1,14 @@
+{
+  "generic": "An error occurred",
+  "network": "Network error",
+  "unauthorized": "Unauthorized access",
+  "loginFailed": "Invalid email or password",
+  "registerFailed": "Registration failed",
+  "emailTaken": "Email already in use",
+  "invalidEmail": "Invalid email",
+  "passwordLength": "Password must be at least 8 characters",
+  "passwordMatch": "Passwords do not match",
+  "rateLimit": "Too many requests. Please try again later.",
+  "notFound": "Resource not found",
+  "serverError": "Server error"
+}

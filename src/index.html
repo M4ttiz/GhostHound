@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GhostHound - OSINT Investigation Dashboard</title>
-  <!-- Google Fonts for JetBrains Mono and Orbitron -->
+  <title>GhostHound - Enterprise OSINT Workstation</title>
+  <!-- Google Fonts for Inter and JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,10 +15,9 @@
   <!-- Custom Frameless Window Title Bar -->
   <div id="title-bar">
     <div class="title-logo">
-      <span class="logo-icon">👁️</span>
-      <span class="logo-text">GHOST_HOUND</span>
-      <span class="logo-divider">//</span>
-      <span class="logo-subtext">OSINT INVESTIGATION TERMINAL v1.0.0</span>
+      <span class="logo-icon">🛡️</span>
+      <span class="logo-text">GhostHound</span>
+      <span class="logo-subtext">Enterprise OSINT Workstation</span>
     </div>
     <div id="window-controls">
       <button class="control-btn" id="btn-minimize" title="Minimize">—</button>
@@ -30,43 +29,97 @@
   <!-- Main Dashboard Container -->
   <div id="app-container">
     
-    <!-- Top Bar: Omnibox + Stealth Indicator -->
+    <!-- Top Bar: Unified Search & Indicators -->
     <header id="top-bar">
-      <div class="omnibox-wrapper">
-        <span class="prompt-symbol">&gt;_</span>
-        <input type="text" id="omnibox" placeholder="Search @username, email@domain.com, domain.com, or IP..." autocomplete="off">
-        <button id="btn-scan">RUN SCAN</button>
+      <div class="search-section">
+        <div class="omnibox-wrapper">
+          <span class="prompt-symbol">🔍</span>
+          <input type="text" id="omnibox" placeholder="Search email, domain, IP, username, hash..." autocomplete="off">
+          <button id="btn-scan">Analyze</button>
+        </div>
+        <div id="scan-progress-container" class="progress-hidden">
+          <span class="spinner-mini"></span>
+          <span id="scan-progress-text">Resolving target DNS...</span>
+        </div>
       </div>
-      <div id="stealth-indicator" class="stealth-active">
-        <span class="pulse-dot"></span>
-        <span class="stealth-label">STEALTH CORE: ACTIVE</span>
-        <span class="stealth-badges">
-          <span class="badge">[UA_ROTATION]</span>
-          <span class="badge">[RTC_SHIELD]</span>
-        </span>
+      
+      <div class="header-widgets">
+        <div id="stealth-indicator" class="stealth-active">
+          <span class="pulse-dot"></span>
+          <span class="stealth-label">SECURE NODE ACTIVE</span>
+          <div class="stealth-badges">
+            <span class="badge">UA Rotation</span>
+            <span class="badge">RTC Shield</span>
+          </div>
+        </div>
       </div>
     </header>
 
     <!-- Main Workspace Layout -->
     <div id="workspace">
       
-      <!-- Left Sidebar: Operations Log -->
-      <aside id="sidebar">
+      <!-- Collapsible & Resizable Left Sidebar -->
+      <aside id="sidebar" style="width: 250px;">
         <div class="sidebar-header">
-          <h3>OPERATIONS_LOG</h3>
-          <span class="terminal-dot"></span>
+          <h3>INTELLIGENCE PANEL</h3>
+          <button id="btn-toggle-sidebar" class="sidebar-toggle-btn" title="Toggle Sidebar">◀</button>
         </div>
-        <div id="log-feed" class="terminal-scroll">
-          <div class="log-entry sys">[SYSTEM] Booting GhostHound OSINT engine...</div>
-          <div class="log-entry sys">[SYSTEM] WebRTC UDP leak shield active.</div>
-          <div class="log-entry sys">[SYSTEM] User-Agent pool loaded (5 rotating agents).</div>
-          <div class="log-entry success">[SYSTEM] Ready for target inputs.</div>
+        
+        <div class="sidebar-scrollable-content">
+          <!-- Recent Searches Section -->
+          <div class="sidebar-section">
+            <h4 class="section-title">Recent Searches</h4>
+            <ul id="history-list" class="sidebar-list">
+              <li class="empty-list-msg">No recent history</li>
+            </ul>
+          </div>
+          
+          <!-- Saved Targets Section -->
+          <div class="sidebar-section">
+            <h4 class="section-title">Saved Targets</h4>
+            <ul id="saved-list" class="sidebar-list">
+              <li class="empty-list-msg">No saved targets</li>
+            </ul>
+          </div>
+          
+          <!-- Collections Section -->
+          <div class="sidebar-section">
+            <h4 class="section-title">Collections</h4>
+            <ul class="sidebar-list">
+              <li><span class="list-icon">📁</span> Threat Actor Profiles</li>
+              <li><span class="list-icon">📁</span> Active Infrastructure</li>
+              <li><span class="list-icon">📁</span> Email Targets</li>
+            </ul>
+          </div>
+
+          <!-- Configuration Status Panel -->
+          <div class="sidebar-section sidebar-status-section">
+            <h4 class="section-title">Stealth Engine Status</h4>
+            <div class="sidebar-status-grid">
+              <div class="status-row">
+                <span class="status-lbl">WebRTC UDP:</span>
+                <span class="status-v status-ok">Blocked</span>
+              </div>
+              <div class="status-row">
+                <span class="status-lbl">UA Profile:</span>
+                <span class="status-v" id="ua-current-profile">Rotated (5)</span>
+              </div>
+              <div class="status-row">
+                <span class="status-lbl">SSL Pinning:</span>
+                <span class="status-v status-ok">Bypassed</span>
+              </div>
+            </div>
+          </div>
         </div>
+        
         <div class="sidebar-footer">
           <span class="footer-status">ONLINE</span>
-          <span class="footer-latency" id="latency-val">EST_PING: 14ms</span>
+          <span class="footer-latency" id="latency-val">PING: 14ms</span>
         </div>
       </aside>
+
+      <!-- Sidebar Drag Resizer Handle -->
+      <div id="sidebar-resizer"></div>
 
       <!-- Right Panel: Tabs and Results Display -->
       <main id="main-content">
@@ -86,63 +139,69 @@
           <!-- Tab 1: Dashboard Home -->
           <div class="tab-pane active" id="tab-pane-dashboard">
             <div class="welcome-box">
-              <h2>SECURE SYSTEM OPERATION CONSOLE</h2>
-              <p class="subtitle">Passive OSINT reconnaissance module for investigative analysts.</p>
-              
-              <div class="console-graphics">
-                <pre>
-   ______ __               __  __                      __
-  / ____// /_   ____   ___/ /_/ /_  ____   __  __ ____/ /
- / / __ / __ \ / __ \ / ___// __ \/ __ \ / / / // __  / 
-/ /_/ // / / // /_/ /(__  )/ / / / /_/ // /_/ // /_/ /  
-\____//_/ /_/ \____//____//_/ /_/\____/ \__,_/ \__,_/   
-                </pre>
+              <div class="welcome-hero">
+                <div class="hero-logo">
+                  <span class="logo-shield">🛡️</span>
+                  <div>
+                    <h1>GhostHound Intelligence Workbench</h1>
+                    <p class="hero-desc">Enterprise OSINT reconnaissance module and technical data engine.</p>
+                  </div>
+                </div>
+                <div class="hero-stats">
+                  <div class="hero-stat-card">
+                    <span class="stat-num">15+</span>
+                    <span class="stat-name">Sherlock Feeds</span>
+                  </div>
+                  <div class="hero-stat-card">
+                    <span class="stat-num">4</span>
+                    <span class="stat-name">Active Modules</span>
+                  </div>
+                  <div class="hero-stat-card">
+                    <span class="stat-num">100%</span>
+                    <span class="stat-name">Stealth Core</span>
+                  </div>
+                </div>
               </div>
 
-              <h3>INPUT PARSING TEMPLATES:</h3>
+              <h3>INPUT TEMPLATE SCHEMAS</h3>
               <div class="guide-grid">
                 <div class="guide-card" onclick="setOmniboxInput('@sherlock')">
-                  <span class="guide-tag">@username</span>
-                  <p>Sherlock username scanner. Scans 15 major social platforms concurrently.</p>
+                  <div class="card-headline">
+                    <span class="guide-tag">@username</span>
+                    <span class="guide-subtag">Sherlock module</span>
+                  </div>
+                  <p>Scan 15 major social platforms concurrently to locate matching profiles.</p>
                   <span class="example-code">@johndoe</span>
                 </div>
                 <div class="guide-card" onclick="setOmniboxInput('google.com')">
-                  <span class="guide-tag">domain / IP</span>
-                  <p>DNS records, GeoIP, Shodan ports/vulnerabilities, reverse IP and WHOIS parser.</p>
+                  <div class="card-headline">
+                    <span class="guide-tag">domain / IP</span>
+                    <span class="guide-subtag">DNS &amp; Services</span>
+                  </div>
+                  <p>Resolve DNS, WHOIS registry dumps, reverse IP index, and Shodan ports/vulnerabilities.</p>
                   <span class="example-code">github.com</span>
                 </div>
                 <div class="guide-card" onclick="setOmniboxInput('test@example.com')">
-                  <span class="guide-tag">email@addr.com</span>
+                  <div class="card-headline">
+                    <span class="guide-tag">email address</span>
+                    <span class="guide-subtag">Breaches lookup</span>
+                  </div>
                   <p>Aggregated public breach scanner checks across LeakCheck and XposedOrNot APIs.</p>
                   <span class="example-code">admin@domain.com</span>
                 </div>
                 <div class="guide-card" id="guide-exif-click">
-                  <span class="guide-tag">Image File</span>
-                  <p>Drag &amp; drop any JPG/PNG here, or click to extract embedded EXIF camera, software, &amp; GPS coordinates.</p>
-                  <span class="example-code">CLICK / DROP FILE</span>
+                  <div class="card-headline">
+                    <span class="guide-tag">Image File</span>
+                    <span class="guide-subtag">Metadata extraction</span>
+                  </div>
+                  <p>Browse image files to extract camera model, software tags, and GPS coordinates.</p>
+                  <span class="example-code">DRAG / DROP JPG/PNG</span>
                 </div>
               </div>
 
-              <div class="system-status-box">
-                <div class="status-title">RECON OPERATIONAL PARAMETERS</div>
-                <div class="status-grid">
-                  <div class="status-item">
-                    <span class="stat-label">WebRTC Protection:</span>
-                    <span class="stat-val status-green">ENABLED [UDP_BLOCKED]</span>
-                  </div>
-                  <div class="status-item">
-                    <span class="stat-label">Session UA Profile:</span>
-                    <span class="stat-val status-cyan" id="ua-current-profile">Rotated (5 Engines)</span>
-                  </div>
-                  <div class="status-item">
-                    <span class="stat-label">Core Threat Feeds:</span>
-                    <span class="stat-val status-green">ONLINE</span>
-                  </div>
-                  <div class="status-item">
-                    <span class="stat-label">Bypasses Active:</span>
-                    <span class="stat-val status-cyan">SSL_Pinning | Scrub_Headers</span>
-                  </div>
-                </div>
+              <div class="operational-workflow-card">
+                <h4 class="section-title">Passive Pivot Intelligence Workflow</h4>
+                <p class="workflow-text">GhostHound operates as an investigative browser. Elements rendered in data panels (such as A records, MX mail exchanges, resolved IP targets, email sources, and usernames) contain active pivot triggers. Click on any highlighted link to seamlessly launch adjacent OSINT queries, enabling continuous threat tracing across entities.</p>
               </div>
             </div>
           </div>
@@ -152,10 +211,20 @@
             <div class="pane-header">
               <h2>SHERLOCK USERNAME TARGET SCANNER</h2>
               <div class="pane-actions">
+                <button class="btn-action" id="btn-save-sherlock">★ Save Target</button>
                 <button class="btn-action" id="btn-export-sherlock">EXPORT JSON</button>
               </div>
             </div>
-            <div class="results-stats" id="stats-sherlock">No scan performed yet.</div>
+            
+            <div class="results-stats-row">
+              <div class="results-stats" id="stats-sherlock">No scan performed yet.</div>
+              <div class="results-filter-bar" id="sherlock-filter-bar" style="display: none;">
+                <span class="filter-lbl">Filter:</span>
+                <button class="btn-filter active" id="btn-filter-all">Show All</button>
+                <button class="btn-filter" id="btn-filter-found">Only Found Profiles</button>
+              </div>
+            </div>
+            
             <div class="results-table-container">
               <table id="table-sherlock" class="glow-table">
                 <thead>
@@ -167,7 +236,7 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td colspan="3" class="empty-state">Enter a username starting with @ in the Omnibox above and hit Run Scan.</td>
+                    <td colspan="3" class="empty-state">Enter a username starting with @ in the Omnibox above and click Analyze.</td>
                   </tr>
                 </tbody>
               </table>
@@ -179,6 +248,7 @@
             <div class="pane-header">
               <h2>DOMAIN &amp; IP TARGET INVESTIGATION</h2>
               <div class="pane-actions">
+                <button class="btn-action" id="btn-save-domain">★ Save Target</button>
                 <button class="btn-action" id="btn-export-domain">EXPORT JSON</button>
               </div>
             </div>
@@ -193,6 +263,7 @@
             <div class="pane-header">
               <h2>AGGREGATED PUBLIC BREACH SCANNER</h2>
               <div class="pane-actions">
+                <button class="btn-action" id="btn-save-breaches">★ Save Target</button>
                 <button class="btn-action" id="btn-export-breaches">EXPORT JSON</button>
               </div>
             </div>
@@ -242,17 +313,32 @@
 
         </div>
       </main>
-
     </div>
 
   </div>
 
-  <!-- Loading Overlay -->
+  <!-- Collapsible Bottom Operations Drawer (VSCode style) -->
+  <div id="bottom-console" class="collapsed">
+    <div class="console-header">
+      <div class="console-header-left">
+        <span class="console-icon">💬</span>
+        <span class="console-title">OPERATIONS CONSOLE LOG</span>
+      </div>
+      <div class="console-actions">
+        <button id="btn-toggle-console" class="console-toggle-btn" title="Toggle Console Output">▲ Expand Console</button>
+      </div>
+    </div>
+    <div id="log-feed" class="console-body terminal-scroll">
+      <!-- Real-time logs are populated dynamically here -->
+    </div>
+  </div>
+
+  <!-- Loading Overlay (Sleek minimalist screen blocker) -->
   <div id="loading-overlay">
     <div class="spinner-box">
       <div class="cyber-spinner"></div>
-      <div class="loading-text">SCANNING TARGET...</div>
-      <div class="loading-subtext">Executing secure socket connections in stealth mode...</div>
+      <div class="loading-text">PERFORMING CORRELATION SCAN...</div>
+      <div class="loading-subtext">Executing secure connections in stealth mode...</div>
     </div>
   </div>
 
