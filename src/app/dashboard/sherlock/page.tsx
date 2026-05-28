@@ -5,6 +5,7 @@ import { Search, CheckCircle, XCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
 
 interface SherlockResult {
   platform: string;
@@ -14,21 +15,20 @@ interface SherlockResult {
 }
 
 export default function SherlockPage() {
+  const { toast } = useToast();
   const [username, setUsername] = useState("");
   const [results, setResults] = useState<SherlockResult[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleSearch = async () => {
     if (!username) return;
 
     setLoading(true);
-    setError("");
     setResults([]);
 
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch("/api/v1/tools/sherlock", {
+      const response = await fetch("/api/tools/sherlock", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,8 +44,9 @@ export default function SherlockPage() {
       }
 
       setResults(data.results);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Ricerca fallita";
+      toast({ title: "Errore", description: message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -79,11 +80,6 @@ export default function SherlockPage() {
               {loading ? "Searching..." : <Search className="h-4 w-4" />}
             </Button>
           </div>
-          {error && (
-            <div className="mt-4 text-sm text-destructive bg-destructive/10 p-3 rounded">
-              {error}
-            </div>
-          )}
         </CardContent>
       </Card>
 

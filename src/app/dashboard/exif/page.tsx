@@ -4,7 +4,14 @@ import { useState, useRef } from "react";
 import { FileImage, Upload, MapPin, Calendar, Camera, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import exif from "exif-js";
+import exifJs from "exif-js";
+
+// exif-js published TypeScript definitions are incomplete; the runtime API
+// accepts an HTMLImageElement here.
+const exif = exifJs as unknown as {
+  getData: (img: HTMLImageElement, cb: () => void) => void;
+  getAllTags: (img: HTMLImageElement) => Record<string, unknown>;
+};
 
 export default function ExifPage() {
   const [image, setImage] = useState<string | null>(null);
@@ -22,9 +29,9 @@ export default function ExifPage() {
 
     const reader = new FileReader();
     reader.onload = (event) => {
+      const dataURL = event.target?.result as string;
       const img = new Image();
       img.onload = () => {
-        const dataURL = event.target?.result as string;
         setImage(dataURL);
 
         exif.getData(img, function () {
@@ -267,7 +274,7 @@ export default function ExifPage() {
               <div>
                 <div className="font-semibold">No EXIF Data Found</div>
                 <p className="text-sm text-muted-foreground">
-                  This image doesn't contain any EXIF metadata.
+                  This image doesn&apos;t contain any EXIF metadata.
                 </p>
               </div>
             </div>
