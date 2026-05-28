@@ -9,3 +9,4 @@ venv/
 *.log
 .env
 .rules/
+next-env.d.ts

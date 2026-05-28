@@ -5,6 +5,7 @@ import { Shield, AlertTriangle, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
 
 interface BreachData {
   name: string;
@@ -14,22 +15,21 @@ interface BreachData {
 }
 
 export default function BreachPage() {
+  const { toast } = useToast();
   const [query, setQuery] = useState("");
   const [type, setType] = useState<"email" | "username">("email");
   const [results, setResults] = useState<BreachData[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleCheck = async () => {
     if (!query) return;
 
     setLoading(true);
-    setError("");
     setResults([]);
 
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch("/api/v1/tools/breach", {
+      const response = await fetch("/api/tools/breach", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,8 +45,9 @@ export default function BreachPage() {
       }
 
       setResults(data.results);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Controllo fallito";
+      toast({ title: "Errore", description: message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -87,11 +88,6 @@ export default function BreachPage() {
                 {loading ? "Checking..." : <Shield className="h-4 w-4" />}
               </Button>
             </div>
-            {error && (
-              <div className="text-sm text-destructive bg-destructive/10 p-3 rounded">
-                {error}
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>
@@ -170,7 +166,7 @@ export default function BreachPage() {
         </div>
       )}
 
-      {results.length === 0 && query && !loading && !error && (
+      {results.length === 0 && query && !loading && (
         <Card className="border-green-500/50 bg-green-500/5">
           <CardContent className="p-6">
             <div className="flex items-center gap-3">

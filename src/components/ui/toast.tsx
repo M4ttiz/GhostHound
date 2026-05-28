@@ -124,13 +124,3 @@ export {
   ToastClose,
   ToastAction,
 };
-
-export function Toaster() {
-  const [toasts, setToasts] = React.useState<ToastProps[]>([]);
-
-  return (
-    <ToastProvider>
-      <ToastViewport />
-    </ToastProvider>
-  );
-}
